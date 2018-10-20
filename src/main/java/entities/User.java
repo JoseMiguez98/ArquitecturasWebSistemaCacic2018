@@ -21,7 +21,8 @@ import sistemaCacic2018.SistemaCacic;
 @Entity
 public class User implements Serializable { 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column
 	private int id_user;
 	private String name;
 	@Column(name="is_evaluator")
@@ -109,7 +110,7 @@ public class User implements Serializable {
 	public void addRevision(Project project, String str_date) throws ParseException {
 		if(project.canBeEvaluated(this)) {
 			Date date = new SimpleDateFormat("dd/MM/yyyy").parse(str_date);
-			Date formattedDate = new Date(date.getYear(),date.getMonth(),date.getDay()-1);
+			Date formattedDate = new Date(date.getYear(),date.getMonth(),date.getDate());
 			Revision rev = new Revision();
 			rev.setUser(this);
 			rev.setProject(project);

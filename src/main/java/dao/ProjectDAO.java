@@ -1,5 +1,6 @@
 package dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -11,30 +12,24 @@ import entities.Project;
 
 public class ProjectDAO implements DAO<Project, Integer>{
 	private static ProjectDAO daoProject;
-	
+
 	public static ProjectDAO getInstance() {
 		if(daoProject==null) {
 			daoProject = new ProjectDAO();
 		}
 		return daoProject;
 	}
-	
+
 	@Override
-	public Project persist(Project entity) {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ArquiTPEspecial");
-		EntityManager em = emf.createEntityManager();
+	public Project persist(Project entity, EntityManager em) {
 		em.getTransaction().begin();
 		em.persist(entity);
 		em.getTransaction().commit();
-		em.close();
-		emf.close();
 		return entity;
 	}
 
 	@Override
-	public Project update(Integer id, Project updatedProject) {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ArquiTPEspecial");
-		EntityManager em = emf.createEntityManager();
+	public Project update(Integer id, Project updatedProject, EntityManager em) {
 		em.getTransaction().begin();
 		Project project = em.find(Project.class, id);
 		try {
@@ -51,34 +46,25 @@ public class ProjectDAO implements DAO<Project, Integer>{
 		finally {
 			em.flush();
 			em.getTransaction().commit();
-			em.close();
-			emf.close();
 		}
 		return updatedProject;
 	}
 
 	@Override
-	public Project findById(Integer id) {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ArquiTPEspecial");
-		EntityManager em = emf.createEntityManager();
+	public Project findById(Integer id, EntityManager em) {
 		Project project = em.find(Project.class, id);
-		em.close();
 		return project;
 	}
 
 	@Override
-	public List<Project> findAll() {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ArquiTPEspecial");
-		EntityManager em = emf.createEntityManager();
+	public List<Project> findAll(EntityManager em) {
 		TypedQuery<Project>query = em.createQuery("Select p from Project p", Project.class);
 		List<Project>projects = query.getResultList();
 		return projects;
 	}
 
 	@Override
-	public boolean delete(Integer id) {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ArquiTPEspecial");
-		EntityManager em = emf.createEntityManager();
+	public boolean delete(Integer id, EntityManager em) {
 		em.getTransaction().begin();
 		Project project = em.find(Project.class, id);
 		try {
@@ -86,9 +72,23 @@ public class ProjectDAO implements DAO<Project, Integer>{
 		}
 		finally {
 			em.getTransaction().commit();
-			em.close();
-			emf.close();
 		}
 		return project!=null;
+	}
+	
+	/**
+	 * Consultar trabajos de investigación y sus propiedades.
+	 * @param em
+	 * @return List with all works properties
+	 */
+	public List<String>getAllResearchWorksInfo(EntityManager em){
+		List<String>worksInfo = new ArrayList<String>();
+		List<Project>projects = this.findAll(em);
+		
+		for(Project p : projects) {
+			worksInfo.add(p.toString());
+		}
+		
+		return worksInfo;
 	}
 }

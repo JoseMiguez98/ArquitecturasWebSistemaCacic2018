@@ -10,13 +10,14 @@ import converters.ListToStringConverter;
 @Entity
 public class Project implements Serializable {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column
 	private int id_project;
 	private String name;
 	@Convert(converter = ListToStringConverter.class)
 	private List<String> topics = new ArrayList<String>();
 	private String category;
-	@ManyToOne(cascade={CascadeType.MERGE, CascadeType.PERSIST})
+	@ManyToOne(cascade=CascadeType.ALL)
 	private User author;
 	private static final long serialVersionUID = 1L;
 
@@ -37,11 +38,11 @@ public class Project implements Serializable {
 	public void addTopic(String topic) {
 		this.topics.add(topic);
 	}  
-	
+
 	public void setTopics(List<String>newTopics) {
 		this.topics = newTopics;
 	}
-	
+
 	public String getCategory() {
 		return this.category;
 	}
@@ -77,5 +78,14 @@ public class Project implements Serializable {
 
 	public boolean canBeEvaluated(User user) {
 		return user.isEvaluator() && user.getRevisionsSize()<3 && !this.author.equals(user) && user.hasSufficientKnowledges(this);
+	}
+
+	public String toString() {
+		String topics = String.join(", ", this.topics);
+		return "ID: "+this.id_project+
+				"| Name: "+this.name+
+				"| Topics: "+topics+
+				"| Category: "+this.category+
+				"| Author: "+this.author.getName();
 	}
 }

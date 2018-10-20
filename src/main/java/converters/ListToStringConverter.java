@@ -14,7 +14,7 @@ public class ListToStringConverter implements AttributeConverter<List<String>,St
 	}
 
 	@Override
-	public List<String> convertToEntityAttribute(String varchar) {
+	public ArrayList<String> convertToEntityAttribute(String varchar) {
 		return new ArrayList<String>(Arrays.asList(varchar.split(",")));
 	}
 }

@@ -1,10 +1,12 @@
-package sistemaCacic2018;
+ package sistemaCacic2018;
 
 import java.text.ParseException;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 
 import dao.ProjectDAO;
 import dao.UserDAO;
@@ -16,23 +18,25 @@ import entities.User;
  *
  */
 public class SistemaCacic {
-	
+	/*
+	 * F.T.D: Hacer una entity Topic que diga si son expertos o especificos asi quedan
+	 * persistidos en la BBDD;
+	 */
 	public static String[]temas_generales = new String[]{"ProgrammingLanguages","Algorithms","Maths","Algebra","IA","Heuristics","JPA"};
 	public static String[]temas_expertos = new String[] {"Java","MySQL","C++","Assembly","Dijkstra","DeepLearning","MachineLearning","WebDevelop","Forensic","ImageProcessing","ObjectOrientedProgramming"};
 	
 	public static void main(String[] args) throws ParseException {
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ArquiTPEspecial");
+		EntityManager em = emf.createEntityManager();
 		User jose = new User();
 		User belu = new User();
 		User enzo = new User();
-//		User plaga = new User();
-//		User saul = new User();
-//		User batman = new User();
 		Project arqui = new Project();
 		Project ux = new Project();
 		Project math = new Project();
 		Project cacic = new Project();
-//		Project security = new Project();
-//		Project ia = new Project();
+		Project security = new Project();
+		Project ia = new Project();
 		Project arduino = new Project();
 		//-------SwitchingAuthors-----------//
 		jose.switchAuthor();
@@ -71,7 +75,7 @@ public class SistemaCacic {
 		cacic.addTopic(temas_generales[1]);
 		cacic.addTopic(temas_generales[6]);
 		cacic.addTopic(temas_expertos[2]);
-		cacic.setAuthor(jose);
+		cacic.setAuthor(enzo);
 		
 		arduino.setName("Arduino");
 		arduino.setCategory("Article");
@@ -80,6 +84,17 @@ public class SistemaCacic {
 		arduino.addTopic(temas_generales[4]);
 		arduino.addTopic(temas_expertos[1]);
 		arduino.setAuthor(belu);
+		
+		security.setName("Security");
+		security.setCategory("Poster");
+		security.addTopic(temas_generales[4]);
+		security.setAuthor(jose);
+		
+		ia.setName("Artifical intelligence");
+		ia.setCategory("Poster");
+		ia.addTopic(temas_expertos[6]);
+		ia.addTopic("C++");
+		ia.setAuthor(belu);
 		//---------------------------------//
 		
 		//--------UsersProperties---------//
@@ -117,19 +132,34 @@ public class SistemaCacic {
 		//No deberia agregarse ya que no posee conocimiento en todos los temas que abarca el proyecto
 		enzo.addRevision(arduino,"02/07/2020");
 		//Deberia agregarse ya que ux es poster y enzo posee conocimiento solo en 1 tema del proyecto
-		enzo.addRevision(ux,"03/11/2019");
+		enzo.addRevision(ux,"03/11/2016");
 		//No deberia agregarse ya que es el autor de la misma
 		enzo.addRevision(math,"03/06/2020");
 		//Deberia agregarse ya que posee conocimiento en todos los temas
-		enzo.addRevision(cacic,"04/01/2018");
+		enzo.addRevision(cacic,"04/05/2018");
+		enzo.addRevision(security,"02/06/2018");
+		//No se agrega por que enzo ya tiene 3 revisiones
+		enzo.addRevision(ia, "02/06/2020");
 		
-		UserDAO.getInstance().persist(jose);
-		UserDAO.getInstance().persist(belu);
-		UserDAO.getInstance().persist(enzo);
+		UserDAO.getInstance().persist(enzo, em);
+		UserDAO.getInstance().persist(belu, em);
+		UserDAO.getInstance().persist(jose, em);
 		
-		ProjectDAO.getInstance().persist(ux);
-		ProjectDAO.getInstance().persist(arduino);
+		ProjectDAO.getInstance().persist(math, em);
+		ProjectDAO.getInstance().persist(ia, em);
+		ProjectDAO.getInstance().persist(ux, em);
+		ProjectDAO.getInstance().persist(arduino, em);
 		
+		List<Project>researchWorks = UserDAO.getInstance().getAllResearchWorksOnArea(1,"C++",em);
+		for(Project p : researchWorks) {
+			System.out.println(p.getName());
+		}
+		
+//		deleteAllData(em);
+		
+		emf.close();
+		em.close();	
+
 //		em.persist(ux);
 //		em.persist(arduino);
 //		em.persist(jose);
@@ -137,5 +167,21 @@ public class SistemaCacic {
 //		em.persist(enzo);
 		
 		//-------------------------------------//
+	}
+	
+	/**
+	 * Eliminar todos los datos de la base de datos para realizar otro testeo.
+	 * @param em
+	 */
+	public static void deleteAllData(EntityManager em) {
+		em.getTransaction().begin();
+		Query q1 = em.createQuery("DELETE FROM User");
+		Query q2 = em.createQuery("DELETE FROM Project");
+		Query q3 = em.createQuery("DELETE FROM Revision");
+		
+		q1.executeUpdate();
+		q2.executeUpdate();
+		q3.executeUpdate();
+		em.getTransaction().commit();
 	}
 }
