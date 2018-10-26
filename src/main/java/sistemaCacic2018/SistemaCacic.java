@@ -1,4 +1,4 @@
- package sistemaCacic2018;
+package sistemaCacic2018;
 
 import java.text.ParseException;
 import java.util.List;
@@ -24,7 +24,7 @@ public class SistemaCacic {
 	 */
 	public static String[]temas_generales = new String[]{"ProgrammingLanguages","Algorithms","Maths","Algebra","IA","Heuristics","JPA"};
 	public static String[]temas_expertos = new String[] {"Java","MySQL","C++","Assembly","Dijkstra","DeepLearning","MachineLearning","WebDevelop","Forensic","ImageProcessing","ObjectOrientedProgramming"};
-	
+
 	public static void main(String[] args) throws ParseException {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("ArquiTPEspecial");
 		EntityManager em = emf.createEntityManager();
@@ -50,7 +50,7 @@ public class SistemaCacic {
 		arqui.addTopic("Jersey");
 		arqui.setName("Arquitecturas Web");
 		arqui.setAuthor(belu);
-		
+
 		//Tiene que quedar "Invalid Category"
 		ux.setCategory("Poster");
 		ux.addTopic("UI");
@@ -61,14 +61,14 @@ public class SistemaCacic {
 		ux.addTopic(temas_expertos[2]);
 		ux.setName("Interfaces de usuario");
 		ux.setAuthor(jose);
-		
+
 		math.setName("Math");
 		math.setCategory("Summary");
 		math.addTopic("POW");
 		math.addTopic("Numbers");
 		math.addTopic("Sum");
 		math.setAuthor(enzo);
-		
+
 		cacic.setName("CACIC2018");
 		cacic.setCategory("Article");
 		cacic.addTopic(temas_generales[4]);
@@ -76,7 +76,7 @@ public class SistemaCacic {
 		cacic.addTopic(temas_generales[6]);
 		cacic.addTopic(temas_expertos[2]);
 		cacic.setAuthor(enzo);
-		
+
 		arduino.setName("Arduino");
 		arduino.setCategory("Article");
 		arduino.addTopic(temas_generales[6]);
@@ -84,19 +84,19 @@ public class SistemaCacic {
 		arduino.addTopic(temas_generales[4]);
 		arduino.addTopic(temas_expertos[1]);
 		arduino.setAuthor(belu);
-		
+
 		security.setName("Security");
 		security.setCategory("Poster");
 		security.addTopic(temas_generales[4]);
 		security.setAuthor(jose);
-		
+
 		ia.setName("Artifical intelligence");
 		ia.setCategory("Poster");
 		ia.addTopic(temas_expertos[6]);
 		ia.addTopic("C++");
 		ia.setAuthor(belu);
 		//---------------------------------//
-		
+
 		//--------UsersProperties---------//
 		jose.switchEvaluator();
 		jose.setName("Jose");
@@ -109,7 +109,7 @@ public class SistemaCacic {
 		jose.setQualification();
 		jose.addRevision(arqui,"04/05/2018");
 		jose.addRevision(cacic,"04/05/2018");
-		
+
 		belu.switchEvaluator();
 		belu.setName("Belu");
 		belu.addKnowledge("Dance",temas_generales,temas_expertos);
@@ -120,7 +120,7 @@ public class SistemaCacic {
 		belu.setQualification();
 		belu.addRevision(ux,"04/05/2018");
 		belu.addRevision(math,"04/05/2018");
-		
+
 		enzo.switchEvaluator();
 		enzo.setName("Enzo");
 		enzo.addKnowledge(temas_generales[4], temas_generales, temas_expertos);
@@ -140,35 +140,35 @@ public class SistemaCacic {
 		enzo.addRevision(security,"02/06/2018");
 		//No se agrega por que enzo ya tiene 3 revisiones
 		enzo.addRevision(ia, "02/06/2020");
-		
+
 		UserDAO.getInstance().persist(enzo, em);
 		UserDAO.getInstance().persist(belu, em);
 		UserDAO.getInstance().persist(jose, em);
-		
+
 		ProjectDAO.getInstance().persist(math, em);
 		ProjectDAO.getInstance().persist(ia, em);
 		ProjectDAO.getInstance().persist(ux, em);
 		ProjectDAO.getInstance().persist(arduino, em);
-		
+
 		List<Project>researchWorks = UserDAO.getInstance().getAllResearchWorksOnArea(1,"C++",em);
 		for(Project p : researchWorks) {
 			System.out.println(p.getName());
 		}
-		
-//		deleteAllData(em);
-		
+
+		//		deleteAllData(em);
+
 		emf.close();
 		em.close();	
 
-//		em.persist(ux);
-//		em.persist(arduino);
-//		em.persist(jose);
-//		em.persist(belu);
-//		em.persist(enzo);
-		
+		//		em.persist(ux);
+		//		em.persist(arduino);
+		//		em.persist(jose);
+		//		em.persist(belu);
+		//		em.persist(enzo);
+
 		//-------------------------------------//
 	}
-	
+
 	/**
 	 * Eliminar todos los datos de la base de datos para realizar otro testeo.
 	 * @param em
@@ -178,7 +178,7 @@ public class SistemaCacic {
 		Query q1 = em.createQuery("DELETE FROM User");
 		Query q2 = em.createQuery("DELETE FROM Project");
 		Query q3 = em.createQuery("DELETE FROM Revision");
-		
+
 		q1.executeUpdate();
 		q2.executeUpdate();
 		q3.executeUpdate();

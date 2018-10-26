@@ -144,4 +144,13 @@ public class User implements Serializable {
 		//Si posee una categoria invalida puede ser evaluado por cualquiera
 		return true;
 	}
+	
+	public String toString() {
+		String knowledges = String.join(", ", this.knowledge);
+		
+		return "ID: "+this.id_user+
+				" |Name: "+this.name+
+				" |Knowledges: "+knowledges+
+				" |Qualification: "+this.qualification;
+	}
 }

@@ -184,7 +184,7 @@ public class UserDAO implements DAO<User, Integer> {
 	 */
 	public List<Project> getAllResearchWorksOnArea(Integer id, String area, EntityManager em){
 		User user = this.findById(id, em);
-		if(user!=null&&user.isAuthor()&&user.isEvaluator()) {
+		if(user!=null&&user.isEvaluator()) {
 			TypedQuery<User>query = em.createQuery("SELECT u FROM User u WHERE u.id_user=?0", User.class);
 			query.setParameter(0, user.getId_user());
 			User result_user = query.getSingleResult();
